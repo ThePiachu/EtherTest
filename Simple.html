@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<script type="text/javascript">
+		var contractDesc =
+		[
+			{
+				"name": "SetMessage(string32)",
+				"type": "function",
+				"inputs": [
+					{
+						"name": "newMessage",
+						"type": "string32"
+					}
+				]
+			},
+			{
+				"name": "Message()",
+				"type": "function",
+				"inputs": [
+				]
+			}
+		];
+
+		var contractAddress = '0xc7e2a966b23a93cef7c3d5684838ea73fa58d63d';
+
+		function cheap() {
+			contract = web3.eth.contract(contractAddress, contractDesc);
+			contract.SetMessage(document.getElementById('message').value);
+		}
+
+		function message() {
+			contract = web3.eth.contract(contractAddress, contractDesc);
+			//contract.SetMessage.sendTransaction(document.getElementById('message').value, {from: web3.eth.coinbase, value:web3.toWei('2','ether')});
+			web3.eth.sendTransaction(
+				{
+					from: web3.eth.coinbase,
+					value:web3.toWei('2','ether'),
+					to: contractAddress,
+					//data: web3.fromAscii( document.getElementById('message').value )
+					//data: web3.fromAscii( 'TEST' )
+					data: '0x0000000000000000000000000000000000000000'
+				});
+		}
+
+
+		function refreshOld() {
+			var contractData = web3.eth.storageAt(contractAddress);
+			var contractString = JSON.stringify(contractData);
+			document.getElementById('displayMessage').innerHTML = 'Current message: ' + web3.toAscii(contractData['0x']);
+ 			//document.getElementById('displayMessage').innerHTML = contractString;
+		}
+
+		function refresh() {
+			var SimpleContract = web3.eth.contract(contractDesc);
+			var contract = SimpleContract.at(contractAddress);
+			//var contractData = web3.eth.storageAt(contractAddress);
+			//var contractString = JSON.stringify(contractData);
+			//contract = web3.eth.contract(contractAddress, contractDesc);
+			document.getElementById('displayMessage').innerHTML = 'Current message2: ' + contract.Message();
+ 			//document.getElementById('displayMessage').innerHTML = contractString;
+		}
+
+	</script>
+</head>
+<body>
+<div>
+	<div>
+		<p id="displayMessage">Current message: </p>
+	</div>
+	<div>
+		<h3>Set message:</h3>
+	</div>
+	<div>
+		<input id="message" class="form-control" type="text" placeholder="Message"></input><br>
+	</div>
+	<button onclick="cheap();">Be Cheap</button>
+	<button onclick="message();">Set message</button>
+	<div>
+		<button onclick="refresh();">Refresh</button>
+		<button onclick="refreshOld();">RefreshOld</button>
+	</div>
+</div>
+</body>
+</html>

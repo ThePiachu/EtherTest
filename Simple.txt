@@ -1,0 +1,15 @@
+contract Simple {
+	string32 public Message;
+
+	function Simple() {
+        Message = "Hello world!";
+	}
+
+	function SetMessage(string32 newMessage) {
+		if (msg.value < 1 finney) {
+		    Message = "Cheapskate!";
+		} else {
+		    Message = newMessage;
+		}
+	}
+}
